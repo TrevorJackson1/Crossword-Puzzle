@@ -1,0 +1,128 @@
+<html>
+<head>
+ <link rel="stylesheet" href="styles/crossword.css" />
+<title>
+</title>
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular-sanitize.js"></script>
+<form action = "save.php" method = "post">
+
+<div id="puzzle_container" ng-app="myApp" ng-controller="myCtrl">
+<table id="puzzle">
+ 
+</div>
+
+<body>
+<div id="puzzle_container" ng-app="myApp" ng-controller="myCtrl" ng-bind-html="grid()">
+<table id="puzzle">
+ <form action = "save.php" method = "post">
+ 
+ 
+
+ <div class = "test" ng-app="myApp" ng-controller="myCtrl">
+ Author 
+ <input type = "text" value=" "  name="authorsname"></input> <br />
+ Puzzle-Title
+ <input type = "text"  name = "puzzle" ></input> <br />
+ Size
+ <input type = "number" min="6" max = "35"  ng-model="numRows" name = "rows" id="rows" ></input> <br />
+ <button type = "button" id = "lockRowsAndCols"> Lock Values </button>
+ <br> <br>
+ <br>
+ <br> <br>
+ 
+Enter the clue word as it exists in the puzzle, followed by a forward slash and then the hint.
+<br>
+Entering an incorrect word or forgetting a word may result in an incompatible puzzle.
+<br>
+<p>
+<textarea rows="30" cols="80" id="cluesFromBox" name="cluesFromBox"></textarea>
+</p>
+ 
+
+ <input type = "submit" value = "Save"></input>
+ </div>
+ </form>
+ <script>
+var letter = "a";
+var number = 1;
+var row;
+var column;
+	document.getElementById("lockRowsAndCols").addEventListener("click", function(){
+	document.getElementById("rows").setAttribute("readonly", "readonly");
+	document.getElementById("cols").setAttribute("readonly", "readonly");
+	});
+  function gridPositionHorizantal(x, xString){
+	if(temp == null || temp == ""){
+		document.getElementById("a2").focus();
+	}
+	var a = x.value + 97;
+  }
+  function puzzleWords(){
+  document.getElementById("a1").focus();
+  }
+  
+  var app = angular.module("myApp", ['ngSanitize']);
+  app.config(['$sceProvider',function($sceProvider){
+  $sceProvider.enabled(false);
+  }]);
+  
+  app.controller("myCtrl", function($scope) {
+  $scope.numRows = 6;
+  $scope.tableHTMLString = "";
+  $scope.grid = function() {
+  var table = document.getElementById("puzzle");
+ 
+  var rows = document.getElementById("rows").value;
+
+  row = rows;
+  column = rows;
+  $scope.tableHTMLString = "<table id=\"puzzle\">";
+ for(i = 0; i < rows; i++){
+  $scope.tableHTMLString += "<tr>";
+  var ascii = String.fromCharCode(i + 97);
+  for(j = 0; j < rows; j++){    
+    var nextId = (j+1);
+    $scope.tableHTMLString += "<td> <input type=\"text\"  maxLength=\"1\"  onkeydown=\"checkKey(event)\" class=\"square letter\" id=\"" + ascii + (j+1) + "\" name=\"" + ascii + (j+1) + "\"></input></td>";  
+  }
+
+  $scope.tableHTMLString += "</tr>"
+ }
+ $scope.tableHTMLString += "</table>"
+ 
+ var table = document.getElementById('puzzle');
+ var griddy = $scope.tableHTMLString;
+ return griddy;
+  }
+  });
+  
+  function checkKey(e) {
+	var temp = letter.charCodeAt(0);
+	var rowInt = row.charCodeAt(0) - 49;
+	var test = 97 + rowInt;
+	if (e.keyCode == '38' && temp != 97) {
+		temp--;
+    }
+    else if (e.keyCode == '40' && temp != test) {
+		temp++;
+	}
+    else if (e.keyCode == '37' && number != 1) {
+        number--;
+    }
+    else if (e.keyCode == '39' && number != column) {
+        number++;
+    }
+	var temp1 = number + "";
+	letter = String.fromCharCode(temp);
+	var position = letter + temp1;
+	document.getElementById(position).focus();
+}
+
+ </script>
+
+ </body>
+ 
+ 
+</html>
